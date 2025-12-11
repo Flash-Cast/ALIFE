@@ -44,10 +44,12 @@ function update() {
                     if (i === 0 && j === 0) continue;
                     const nx = x + i;
                     const ny = y + j;
-                    // 画面端の処理（はみ出したら無視する設定）
-                    if (nx >= 0 && nx < cols && ny >= 0 && ny < rows) {
-                        neighbors += grid[nx][ny];
-                    }
+                    // ループ処理（トーラス構造）
+                    // 左端(-1)に行ったら右端(cols-1)へ、右端(cols)に行ったら左端(0)へ
+                    let colIndex = (x + i + cols) % cols;
+                    let rowIndex = (y + j + rows) % rows;
+
+                    neighbors += grid[colIndex][rowIndex];
                 }
             }
 
