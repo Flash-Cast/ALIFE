@@ -102,7 +102,7 @@ document.getElementById('stopBtn').addEventListener('click', () => {
 document.getElementById('randomBtn').addEventListener('click', () => {
     for (let x = 0; x < cols; x++) {
         for (let y = 0; y < rows; y++) {
-            grid[x][y] = Math.random() > 0.8 ? 1 : 0; // 20%の確率で生存
+            grid[x][y] = Math.random() > 0.5 ? 1 : 0; // 生存確率
         }
     }
     drawGrid();
