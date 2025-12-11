@@ -5,8 +5,8 @@
 使用技術はJavaScript, CSS, HTMLのみです。
 
 ## 開発への参加方法 
-このプロジェクトは、**「みんなでALIFEを作って遊ぶ」**ことを目的としています。
-機能追加、デザイン改善、バグ修正など、どんなコントリビューションも大歓迎です！
+このプロジェクトは、「みんなでALIFEを作って遊ぶ」ことを目的としています。
+機能追加、デザイン改善、バグ修正など、どんなコントリビューションも大歓迎です
 あらゆる改善や機能追加を求めます。ただし、利用者に多大な負荷がかかるようなアルゴリズムは使用しないでください。
 
 ### 開発環境のセットアップ
@@ -31,7 +31,7 @@ This was created as a simple and easily extensible introduction to artificial li
 The only technologies used are JavaScript, CSS, and HTML.
 
 ## How to Contribute
-This project aims to **“create and play with ALIFE together”**.
+This project aims to “create and play with ALIFE together”.
 We welcome any contributions—feature additions, design improvements, bug fixes, and more!
 We encourage all improvements and feature additions. However, please avoid algorithms that impose significant load on users.
 
