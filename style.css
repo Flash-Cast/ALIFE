@@ -12,7 +12,6 @@ canvas {
     background-color: #fff;
     border: 1px solid #999;
     cursor: pointer;
-    /* クリックできることを示す */
     margin-top: 10px;
 }
 

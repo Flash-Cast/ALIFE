@@ -2,9 +2,9 @@ const canvas = document.getElementById('gridCanvas');
 const ctx = canvas.getContext('2d');
 
 // 設定
-const cellSize = 20; // セルの大きさ(px)
-const cols = 40;     // 横のセル数
-const rows = 30;     // 縦のセル数
+const cellSize = 10; // セルを少し小さくして広く見せる
+const cols = 80;     // 横のセル数を増やす
+const rows = 60;     // 縦のセル数を増やす
 let grid = [];       // 現在の世代
 let isRunning = false;
 let intervalId = null;
@@ -24,39 +24,36 @@ function drawGrid() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let x = 0; x < cols; x++) {
         for (let y = 0; y < rows; y++) {
-            // 生きているセルは黒、死んでいるセルは白
-            ctx.fillStyle = grid[x][y] ? '#000' : '#fff';
-            ctx.fillRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1); // -1は枠線用
+            if (grid[x][y]) {
+                ctx.fillStyle = '#000';
+                ctx.fillRect(x * cellSize, y * cellSize, cellSize - 1, cellSize - 1);
+            }
         }
     }
 }
 
-// 世代更新（ライフゲームのルール）
+// 世代更新（ループする世界のルール）
 function update() {
-    let nextGrid = grid.map(arr => [...arr]); // グリッドをコピー
+    let nextGrid = grid.map(arr => [...arr]);
 
     for (let x = 0; x < cols; x++) {
         for (let y = 0; y < rows; y++) {
             let neighbors = 0;
-            // 周囲8マスの生存数をカウント
+
+            // 周囲8マスの生存数をカウント（ループ処理対応）
             for (let i = -1; i <= 1; i++) {
                 for (let j = -1; j <= 1; j++) {
                     if (i === 0 && j === 0) continue;
-                    const nx = x + i;
-                    const ny = y + j;
-                    // ループ処理（トーラス構造）
-                    // 左端(-1)に行ったら右端(cols-1)へ、右端(cols)に行ったら左端(0)へ
-                    let colIndex = (x + i + cols) % cols;
-                    let rowIndex = (y + j + rows) % rows;
 
-                    neighbors += grid[colIndex][rowIndex];
+                    // 端っこに来たら反対側を見る計算
+                    const nx = (x + i + cols) % cols;
+                    const ny = (y + j + rows) % rows;
+
+                    neighbors += grid[nx][ny];
                 }
             }
 
-            // ルール適用
-            // 1. 生きていて、周囲が2か3なら生存 (維持)
-            // 2. 死んでいて、周囲がちょうど3なら誕生 (誕生)
-            // 3. それ以外は死滅 (過疎・過密)
+            // ライフゲームのルール
             if (grid[x][y] === 1) {
                 if (neighbors < 2 || neighbors > 3) nextGrid[x][y] = 0;
             } else {
@@ -68,18 +65,15 @@ function update() {
     drawGrid();
 }
 
-// ループ処理
 function gameLoop() {
     update();
 }
 
-// クリックでセルを反転させる機能
+// クリック操作
 canvas.addEventListener('click', (e) => {
     const rect = canvas.getBoundingClientRect();
     const x = Math.floor((e.clientX - rect.left) / cellSize);
     const y = Math.floor((e.clientY - rect.top) / cellSize);
-
-    // 範囲内かチェック
     if (x >= 0 && x < cols && y >= 0 && y < rows) {
         grid[x][y] = grid[x][y] ? 0 : 1;
         drawGrid();
@@ -90,7 +84,7 @@ canvas.addEventListener('click', (e) => {
 document.getElementById('startBtn').addEventListener('click', () => {
     if (!isRunning) {
         isRunning = true;
-        intervalId = setInterval(gameLoop, 100); // 100msごとに更新
+        intervalId = setInterval(gameLoop, 50); // 少し高速化
     }
 });
 
@@ -102,15 +96,46 @@ document.getElementById('stopBtn').addEventListener('click', () => {
 document.getElementById('randomBtn').addEventListener('click', () => {
     for (let x = 0; x < cols; x++) {
         for (let y = 0; y < rows; y++) {
-            grid[x][y] = Math.random() > 0.5 ? 1 : 0; // 生存確率
+            grid[x][y] = Math.random() > 0.85 ? 1 : 0; // 密度調整
         }
     }
     drawGrid();
 });
 
-document.getElementById('clearBtn').addEventListener('click', () => {
-    initGrid();
-});
+document.getElementById('clearBtn').addEventListener('click', initGrid);
+
+function addGliderGun() {
+
+    // オフセット（配置位置）
+    const ox = 5;
+    const oy = 5;
+
+    const gun = [
+        [0, 4], [0, 5], [1, 4], [1, 5],
+        [10, 4], [10, 5], [10, 6],
+        [11, 3], [11, 7],
+        [12, 2], [12, 8],
+        [13, 2], [13, 8],
+        [14, 5],
+        [15, 3], [15, 7],
+        [16, 4], [16, 5], [16, 6],
+        [17, 5],
+        [20, 2], [20, 3], [20, 4],
+        [21, 2], [21, 3], [21, 4],
+        [22, 1], [22, 5],
+        [24, 0], [24, 1], [24, 5], [24, 6],
+        [34, 2], [34, 3], [35, 2], [35, 3]
+    ];
+
+    gun.forEach(([dx, dy]) => {
+        if (ox + dx < cols && oy + dy < rows) {
+            grid[ox + dx][oy + dy] = 1;
+        }
+    });
+    drawGrid();
+}
+
+document.getElementById('gliderGunBtn').addEventListener('click', addGliderGun);
 
 // 開始
 initGrid();
